@@ -1,47 +1,45 @@
 import React from 'react';
-import moment from 'moment';
-import Loader from 'react-loader-spinner';
-import { axiosWithAuth } from '../utils/axiosWithAuth';
+import axiosWithAuth from '../utils/axiosWithAuth'
 
-class FriendList extends React.Component {
-  state = {
-   friendList: []
-  };
+ class FriendsList extends React.Component {
+    state = {
+        friends: {
+            id: null,
+            name: '',
+            age: 0,
+            email: ''
+        }
+      };
 
-  componentDidMount() {
+   componentDidMount() {
     this.getData();
   }
 
-  getData = () => {
+   getData = () => {
     axiosWithAuth()
-      .get('http://localhost:5000/api/data')
+      .get('http://localhost:5000/api/friends')
       .then(res => {
+        console.log("get friends response", res);
         this.setState({
-         FriendList: res.data.data.filter(
-            price =>
-              price.type === 'Gasoline - Regular' &&
-              (price.location === 'US' || price.location === 'State of Hawaii')
-          )
+          friends: res.data
         });
       })
-      .catch(err => console.log(err.response));
+      .catch(err => console.log(err.res));
   };
 
-  formatData = () => {
-    const formattedData = [];
-    console.log(this.state.gasPrices);
-    this.state.gasPrices.forEach((price, index, arr) => {
-      if (price.location === 'US') {
-        formattedData.push({
-          date: moment(price.date).format('MMM'),
-          USPrice: price.price,
-          HawaiiPrice: arr[index + 1].price
-        });
-      }
-    });
-    return formattedData;
-  };
+   render() {
+      console.log(this.state.friends)
+    return (
+        <>
+            <h1>My Friends List</h1>
+            <div>
+            {this.state.friends.length > 0 ? this.state.friends.map(n => 
+                <p>{n.name}</p>
+            ): null}
+            </div>
+        </>
+    );
+  }
+}
 
-  render() {
-    constFriendList = this.formatData();
-    console.log(gasPrices);
+ export default FriendsList;
